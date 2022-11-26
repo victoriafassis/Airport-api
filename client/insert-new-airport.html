@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
+    <title>Inserir</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+<script>
+        function insertAirport() {
+            insertAirportBy(document.getElementById('id_aeroporto').value,
+                        document.getElementById('nome_aeroporto').value, 
+                        document.getElementById('codigo_iata').value,
+                        document.getElementById('cidade').value,
+                        document.getElementById('codigo_pais_iso').value,
+                        document.getElementById('latitude').value,
+                        document.getElementById('longitude').value,
+                        document.getElementById('altitude').value);
+    }
+
+    function insertAirportBy(id_aeroporto, nome_aeroporto, codigo_iata, cidade, codigo_pais_iso, latitude, longitude, altitude) {
+        const params = {
+            "id_aeroporto" : id_aeroporto,
+            "nome_aeroporto": nome_aeroporto,
+            "codigo_iata": codigo_iata,
+            "cidade": cidade,
+            "codigo_pais_iso": codigo_pais_iso,
+            "latitude": latitude,
+            "longitude": longitude,
+            "altitude": altitude,
+        }
+
+        console.log("params", JSON.stringify(params));
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("POST", `http://localhost:3000/api/v1/aeroportos`, false);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(JSON.stringify(params));
+    
+        alert("Aeroporto inserido com sucesso!");      
+    }
+
+</script>
+<body>
+    <h1 style="padding: 30px;">Inserir um aeroporto</h1>
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+
+                <input type="text" name="id_aeroporto" id="id_aeroporto" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira o ID aeroporto" maxlength="3">
+                <input type="text" name="nome_aeroporto" id="nome_aeroporto" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira o nome do aeroporto">
+                <input type="text" name="codigo_iata" id="codigo_iata" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira o código IATA">
+                <input type="text" name="cidade" id="cidade" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira o nome da cidade">
+                <input type="text" name="codigo_pais_iso" id="codigo_pais_iso" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira o código do país">
+                <input type="text" name="latitude" id="latitude" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira a latitude">
+                <input type="text" name="longitude" id="longitude" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira a longitude">
+                <input type="text" name="altitude" id="altitude" style="width: 420px; margin: 10px; line-height: 35px; font-size: 15px;" placeholder="Insira a altitude">
+
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary2" onClick="insertAirport()" style="margin: 30px;">Inserir</button>
+    <div class="voltar"><a href="allAirports" style="background-color: red; text-decoration: none; border-radius: 5px; padding: 5px; padding-left: 13px; padding-right: 13px; color: #ffff; margin-left: 60px;" >Voltar</a></div>
+
+    <div id="found_airport"></div>
+</body>
+</html>

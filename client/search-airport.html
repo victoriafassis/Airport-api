@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
+    <title>Pesquisar</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+<script>
+        function searchAirport() {
+            searchAirportBy(document.getElementById('codigo_iata').value);
+    }
+
+    function searchAirportBy(codigo_iata) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("GET", `http://localhost:3000/api/v1/aeroportos/${codigo_iata}`, false);
+        xhttp.send();
+        
+        const airports = JSON.parse(xhttp.responseText);
+
+        for (let airport of airports) {
+            const x = `
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${airport.id_aeroporto}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${airport.nome_aeroporto}</h6>
+        
+                                <div class= "cards-text">codigo_iata: ${airport.codigo_iata}</div>
+                                <div class= "cards-text">cidade: ${airport.cidade}</div>
+                                <div class= "cards-text">codigo_pais_iso: ${airport.codigo_pais_iso}</div>
+                                <div class= "cards-text">Latitude: ${airport.latitude}</div>
+                                <div class= "cards-text">Longitude: ${airport.longitude}</div>
+                                <div class= "cards-text">Altitude: ${airport.altitude}</div>
+        
+                                <hr>
+        
+                            </div>
+                        </div>
+                    </div>
+                `
+        
+                document.getElementById('found_airport').innerHTML = x;
+        }
+    }
+</script>
+<body>
+    <h1 class="search-title">Pesquisar aeroporto específico</h1>
+    <input type="text" name="codigo_iata" id="codigo_iata" class="input-search" placeholder="Insira o código IATA..." maxlength="3">
+    <button class="btn btn-primary3" onClick="searchAirport()" style="position: absolute; left: 950px; font-size: 15px;">Pesquisar</button>
+    <div class="voltar2"><a href="allAirports" style="background-color: red; text-decoration: none; border-radius: 5px; 
+        padding: 10px; padding-left: 13px; padding-right: 13px; color: #ffff; position: absolute; left: 950px;">Voltar</a></div>
+
+    <div id="found_airport"></div>
+</body>
+</html>
+

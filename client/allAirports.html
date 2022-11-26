@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aeroportos</title>
+
+    <link rel="stylesheet" href="main.css">
+    <!-- <link rel="stylesheet" href="public/main.css"> -->
+</head>
+
+<body>
+    <div class="container">
+        <hr>
+        <h1>Lista de Aeroportos</h1>
+        <hr>
+
+        <div class="get-airport-detail-BTN">
+            <a href="search-airport" style="color: white; text-decoration: none;">Pesquisar Aeroporto específico</a>
+        </div>
+
+        <div class="insert-new-airport-BTN">
+            <a href="insert-new-airport" style="color: white; text-decoration: none;">Inserir Aeroporto</a>
+        </div>
+
+        <div>
+            <div class="row" id="airports">
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-airport-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar aeroporto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeEditModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                        <form id="editForm" method="PUT" enctype="application/json">
+                            <input type="hidden" name="_method" value="PUT"/>
+
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">nome_aeroporto</label>
+                                <input class="form-control" name="nome_aeroporto" id="nome_aeroporto">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">codigo_iata</label>
+                                <input class="form-control" name="codigo_iata" id="codigo_iata">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">cidade</label>
+                                <input class="form-control" name="cidade" id="cidade">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">codigo_pais_iso</label>
+                                <input class="form-control" name="codigo_pais_iso" id="codigo_pais_iso">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">latitude</label>
+                                <input class="form-control" name="latitude" id="latitude">
+                            </div>
+                
+                            <div class="form-group"> 
+                                <label for="exampleInputPassword1">longitude</label>
+                                <input class="form-control" name="longitude" id="longitude">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">altitude</label>
+                                <input class="form-control" name="altitude" id="altitude">
+                            </div>
+                        </form>
+
+                        <button class="btn btn-primary" onClick="updateAirportWithChangedData()">Salvar</button>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+
+    <script>
+        function setEditModal(codigo_iata) {
+
+                openEditModal();
+
+                const xhttp = new XMLHttpRequest();
+        
+                xhttp.open("GET", `http://localhost:3000/api/v1/aeroportos/${codigo_iata}`, false);
+                xhttp.send();
+        
+                const airport = JSON.parse(xhttp.responseText)[0];
+                
+                document.getElementById('id_aeroporto').value = airport.id_aeroporto;
+                document.getElementById('nome_aeroporto').value = airport.nome_aeroporto;
+                document.getElementById('codigo_iata').value = airport.codigo_iata;
+                document.getElementById('cidade').value = airport.cidade;
+                document.getElementById('codigo_pais_iso').value = airport.codigo_pais_iso;
+                document.getElementById('latitude').value = airport.latitude;
+                document.getElementById('longitude').value = airport.longitude;
+                document.getElementById('altitude').value = airport.altitude;
+        }
+
+    function updateAirportWithChangedData() {
+        updateAirport(document.getElementById('id_aeroporto').value, 
+                        document.getElementById('nome_aeroporto').value, 
+                        document.getElementById('codigo_iata').value,
+                        document.getElementById('cidade').value,
+                        document.getElementById('codigo_pais_iso').value,
+                        document.getElementById('latitude').value,
+                        document.getElementById('longitude').value,
+                        document.getElementById('altitude').value);
+    }
+
+    function updateAirport(id_aeroporto, nome_aeroporto, codigo_iata, cidade, codigo_pais_iso, latitude, longitude, altitude) {
+        const params = {
+            "nome_aeroporto": nome_aeroporto,
+            "codigo_iata": codigo_iata,
+            "cidade": cidade,
+            "codigo_pais_iso": codigo_pais_iso,
+            "latitude": latitude,
+            "longitude": longitude,
+            "altitude": altitude,
+        }
+        console.log("params", JSON.stringify(params));
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("PUT", `http://localhost:3000/api/v1/aeroportos/${codigo_iata}`, false);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(JSON.stringify(params));
+    
+        closeEditModal();
+        alert("Aeroporto atualizado com sucesso!");
+
+        location.reload();
+    }
+
+    function openEditModal() {
+        var modal = document.getElementById("edit-airport-modal");
+        modal.style.display = "block";
+    }
+
+    function closeEditModal() {
+        var modal = document.getElementById("edit-airport-modal");
+        modal.style.display = "none";
+    }
+
+    function deleteAirport(codigo_iata) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", `http://localhost:3000/api/v1/aeroportos/${codigo_iata}`, false);
+        xhttp.send();
+    
+        alert("Aeroporto deletado com sucesso!");
+        location.reload();
+    }
+    
+    function loadAirports() {
+        const xhttp = new XMLHttpRequest();
+    
+        xhttp.open("GET", "http://localhost:3000/api/v1/aeroportos", false);
+        xhttp.send();
+    
+        const airports = JSON.parse(xhttp.responseText);
+    
+        for (let airport of airports) {
+            const x = `
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${airport.id_aeroporto}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">${airport.nome_aeroporto}</h6>
+    
+                            <div class= "cards-text>codigo_iata: ${airport.codigo_iata}</div>
+                            <div class= "cards-text>cidade: ${airport.cidade}</div>
+                            <div class= "cards-text>codigo_pais_iso: ${airport.codigo_pais_iso}</div>
+                            <div class= "cards-text>Latitude: ${airport.latitude}</div>
+                            <div class= "cards-text>Longitude: ${airport.longitude}</div>
+                            <div class= "cards-text>Altitude: ${airport.altitude}</div>
+    
+                            <hr>
+    
+                            <button type="button" class="btn btn-danger" onClick="deleteAirport('${airport.codigo_iata}')">Deletar</button>
+                             <button types="button" class="btn btn-primary" onClick="setEditModal('${airport.codigo_iata}')">
+                                 Editar
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            `
+    
+            document.getElementById('airports').innerHTML = document.getElementById('airports').innerHTML + x;
+        }
+    }
+    
+    loadAirports();
+    </script>
+</body>
+
+</html>
